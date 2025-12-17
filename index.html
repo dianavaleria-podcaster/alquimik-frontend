@@ -1,41 +1,101 @@
-<script>
-  const input = document.getElementById("message");
-  const button = document.getElementById("sendBtn");
-  const chat = document.getElementById("chat");
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alquimi·k · Tester</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  button.addEventListener("click", async (event) => {
-    event.preventDefault(); // 🔑 CLAVE
-
-    const text = input.value.trim();
-    if (!text) return;
-
-    // Mostrar mensaje del usuario
-    const userMsg = document.createElement("div");
-    userMsg.textContent = "Tú: " + text;
-    chat.appendChild(userMsg);
-
-    input.value = "";
-
-    try {
-      const res = await fetch("https://alquimik-backend.onrender.com/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: text })
-      });
-
-      const data = await res.json();
-
-      const botMsg = document.createElement("div");
-      botMsg.textContent = "Alquimi-k: " + data.reply;
-      chat.appendChild(botMsg);
-
-      chat.scrollTop = chat.scrollHeight;
-
-    } catch (err) {
-      console.error(err);
-      alert("Error al conectar con el backend");
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
-  });
-</script>
+
+    header {
+      padding: 16px;
+      background: #181818;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #chat {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      font-size: 16px;
+    }
+
+    footer {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: #181818;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #6ee787;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #58d17a;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>🌿 Alquimi·k · Tester</header>
+
+  <div id="chat"></div>
+
+  <footer>
+    <textarea id="message" placeholder="Escribe tu mensaje..."></textarea>
+    <button id="sendBtn" type="button">Enviar</button>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById("message");
+      const button = document.getElementById("sendBtn");
+      const chat = document.getElementById("chat");
+
+      button.addEventListener("click", function () {
+        const texto = input.value.trim();
+        if (!texto) return;
+
+        const msg = document.createElement("div");
+        msg.textContent = "🧍 " + texto;
+        msg.style.marginBottom = "8px";
+
+        chat.appendChild(msg);
+        chat.scrollTop = chat.scrollHeight;
+
+        input.value = "";
+        input.focus();
+      });
+    });
+  </script>
+
+</body>
+</html>
