@@ -85,12 +85,15 @@
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ message: text })
+            body: JSON.stringify({
+              mensaje: text   // ✅ nombre correcto para el backend
+            })
           }
         );
 
         const data = await response.json();
-        chat.innerHTML += `<p>🤖 ${data.reply}</p>`;
+
+        chat.innerHTML += `<p>🤖 ${data.mensaje}</p>`; // ✅ clave correcta
         chat.scrollTop = chat.scrollHeight;
 
       } catch (err) {
