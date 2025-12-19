@@ -13,6 +13,7 @@
       --agent: #9ecbff;
       --text: #ffffff;
       --muted: rgba(255,255,255,0.5);
+      --max-width: 720px;
     }
 
     * {
@@ -28,17 +29,27 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
-    /* 🔑 GRID PRINCIPAL */
+    /* ---------- GRID PRINCIPAL ---------- */
     body {
       display: grid;
       grid-template-rows: auto 1fr auto;
-      height: 100dvh; /* ← CLAVE */
+      height: 100dvh;
+    }
+
+    /* ---------- CONTENEDOR CENTRADO ---------- */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      width: 100%;
     }
 
     /* ---------- HEADER ---------- */
     header {
       background: var(--panel);
       padding: 8px 12px;
+    }
+
+    header .container {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -62,7 +73,7 @@
     /* ---------- CHAT ---------- */
     #chat {
       overflow-y: auto;
-      padding: 12px;
+      padding: 16px 12px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -100,7 +111,10 @@
     /* ---------- INPUT ---------- */
     footer {
       background: var(--panel);
-      padding: 8px;
+      padding: 8px 12px;
+    }
+
+    footer .container {
       display: flex;
       gap: 8px;
       align-items: flex-end;
@@ -126,26 +140,41 @@
       font-size: 14px;
       cursor: pointer;
     }
+
+    /* ---------- RESPIRACIÓN EN PANTALLAS GRANDES ---------- */
+    @media (min-width: 900px) {
+      body {
+        background: radial-gradient(
+          circle at center,
+          #141414 0%,
+          #0f0f0f 65%
+        );
+      }
+    }
   </style>
 </head>
 
 <body>
 
   <header>
-    <span>🔮 Alquimi·k</span>
-    <select id="agentSelect">
-      <option value="hildegard">Hildegard</option>
-      <option value="lyra">Lyra</option>
-      <option value="maya">Maya</option>
-      <option value="matt_natalia">Matt · Natalia</option>
-    </select>
+    <div class="container">
+      <span>🔮 Alquimi·k</span>
+      <select id="agentSelect">
+        <option value="hildegard">Hildegard</option>
+        <option value="lyra">Lyra</option>
+        <option value="maya">Maya</option>
+        <option value="matt_natalia">Matt · Natalia</option>
+      </select>
+    </div>
   </header>
 
-  <div id="chat"></div>
+  <div id="chat" class="container"></div>
 
   <footer>
-    <textarea id="message" placeholder="Escribe aquí…"></textarea>
-    <button onclick="sendMessage()">Enviar</button>
+    <div class="container">
+      <textarea id="message" placeholder="Escribe aquí…"></textarea>
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
   </footer>
 
   <script>
