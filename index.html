@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Alquimi-k · Tester</title>
+  <title>Alquimi·k · Hildegard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     body {
       margin: 0;
       background: #111;
-      color: #fff;
+      color: #eee;
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
@@ -17,23 +17,54 @@
     }
 
     header {
-      padding: 16px;
+      padding: 12px 16px;
       font-weight: bold;
       font-size: 18px;
       background: #181818;
+      border-bottom: 1px solid #222;
     }
 
     #chat {
       flex: 1;
       padding: 16px;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      max-width: 85%;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #2a2a2a;
+      border-radius: 12px 12px 0 12px;
+      padding: 10px 12px;
+    }
+
+    .agent {
+      align-self: flex-start;
+      background: #1f2a24;
+      border-radius: 12px 12px 12px 0;
+      padding: 10px 12px;
+    }
+
+    .meta {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-bottom: 4px;
     }
 
     footer {
       display: flex;
       gap: 8px;
-      padding: 12px;
+      padding: 10px;
       background: #181818;
+      border-top: 1px solid #222;
     }
 
     textarea {
@@ -42,7 +73,8 @@
       padding: 10px;
       border-radius: 8px;
       border: none;
-      font-size: 16px;
+      font-size: 15px;
+      font-family: inherit;
     }
 
     button {
@@ -58,23 +90,54 @@
 
 <body>
 
-  <header>🔮 Alquimi-k · Tester</header>
+  <header>🌿 Hildegard · Sistema Alquimi·k</header>
 
   <div id="chat"></div>
 
   <footer>
-    <textarea id="message" placeholder="Escribe tu mensaje..."></textarea>
+    <textarea
+      id="message"
+      placeholder="Escribe con calma…"
+      rows="2"
+    ></textarea>
     <button onclick="sendMessage()">Enviar</button>
   </footer>
 
   <script>
+    const chat = document.getElementById("chat");
+
+    function timestamp() {
+      return new Date().toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function addMessage(text, who = "agent", name = "Hildegard") {
+      const div = document.createElement("div");
+      div.className = `msg ${who}`;
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent =
+        (who === "user" ? "Tú" : name) + " · " + timestamp();
+
+      const content = document.createElement("div");
+      content.textContent = text;
+
+      div.appendChild(meta);
+      div.appendChild(content);
+      chat.appendChild(div);
+
+      chat.scrollTop = chat.scrollHeight;
+    }
+
     async function sendMessage() {
       const input = document.getElementById("message");
       const text = input.value.trim();
       if (!text) return;
 
-      const chat = document.getElementById("chat");
-      chat.innerHTML += `<p>🧑 ${text}</p>`;
+      addMessage(text, "user");
       input.value = "";
 
       try {
@@ -86,18 +149,21 @@
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              mensaje: text   // ✅ nombre correcto para el backend
+              mensaje: text
             })
           }
         );
 
         const data = await response.json();
 
-        chat.innerHTML += `<p>🤖 ${data.mensaje}</p>`; // ✅ clave correcta
-        chat.scrollTop = chat.scrollHeight;
+        if (data?.mensaje) {
+          addMessage(data.mensaje, "agent", "Hildegard");
+        } else {
+          addMessage("No he podido responder ahora mismo.", "agent");
+        }
 
       } catch (err) {
-        chat.innerHTML += `<p style="color:red;">⚠️ Error de conexión</p>`;
+        addMessage("⚠️ Error de conexión con el servidor.", "agent");
         console.error(err);
       }
     }
