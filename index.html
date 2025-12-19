@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Alquimi·k · Hildegard</title>
+  <title>Alquimi-k · Tester</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     body {
       margin: 0;
       background: #111;
-      color: #eee;
+      color: #fff;
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
@@ -21,50 +21,44 @@
       font-weight: bold;
       font-size: 18px;
       background: #181818;
-      border-bottom: 1px solid #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    select {
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 14px;
     }
 
     #chat {
       flex: 1;
       padding: 16px;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
     }
 
     .msg {
-      max-width: 85%;
-      line-height: 1.45;
-      white-space: pre-wrap;
+      margin-bottom: 12px;
+      line-height: 1.4;
     }
 
     .user {
-      align-self: flex-end;
-      background: #2a2a2a;
-      border-radius: 12px 12px 0 12px;
-      padding: 10px 12px;
+      color: #6ee787;
     }
 
     .agent {
-      align-self: flex-start;
-      background: #1f2a24;
-      border-radius: 12px 12px 12px 0;
-      padding: 10px 12px;
-    }
-
-    .meta {
-      font-size: 12px;
-      opacity: 0.6;
-      margin-bottom: 4px;
+      color: #9ecbff;
     }
 
     footer {
       display: flex;
       gap: 8px;
-      padding: 10px;
+      padding: 12px;
       background: #181818;
-      border-top: 1px solid #222;
     }
 
     textarea {
@@ -73,8 +67,7 @@
       padding: 10px;
       border-radius: 8px;
       border: none;
-      font-size: 15px;
-      font-family: inherit;
+      font-size: 16px;
     }
 
     button {
@@ -90,54 +83,35 @@
 
 <body>
 
-  <header>🌿 Hildegard · Sistema Alquimi·k</header>
+  <header>
+    🔮 Alquimi-k · Tester
+    <select id="agentSelect">
+      <option value="hildegard">Hildegard</option>
+      <option value="lyra">Lyra</option>
+      <option value="maya">Maya</option>
+      <option value="matt_natalia">Matt · Natalia</option>
+    </select>
+  </header>
 
   <div id="chat"></div>
 
   <footer>
-    <textarea
-      id="message"
-      placeholder="Escribe con calma…"
-      rows="2"
-    ></textarea>
+    <textarea id="message" placeholder="Escribe tu mensaje..."></textarea>
     <button onclick="sendMessage()">Enviar</button>
   </footer>
 
   <script>
-    const chat = document.getElementById("chat");
-
-    function timestamp() {
-      return new Date().toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-    }
-
-    function addMessage(text, who = "agent", name = "Hildegard") {
-      const div = document.createElement("div");
-      div.className = `msg ${who}`;
-
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      meta.textContent =
-        (who === "user" ? "Tú" : name) + " · " + timestamp();
-
-      const content = document.createElement("div");
-      content.textContent = text;
-
-      div.appendChild(meta);
-      div.appendChild(content);
-      chat.appendChild(div);
-
-      chat.scrollTop = chat.scrollHeight;
-    }
-
     async function sendMessage() {
       const input = document.getElementById("message");
       const text = input.value.trim();
       if (!text) return;
 
-      addMessage(text, "user");
+      const chat = document.getElementById("chat");
+      const agent = document.getElementById("agentSelect").value;
+
+      chat.innerHTML += `
+        <div class="msg user">🧑 Tú: ${text}</div>
+      `;
       input.value = "";
 
       try {
@@ -149,21 +123,23 @@
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              mensaje: text
+              mensaje: text,
+              to: agent
             })
           }
         );
 
         const data = await response.json();
 
-        if (data?.mensaje) {
-          addMessage(data.mensaje, "agent", "Hildegard");
-        } else {
-          addMessage("No he podido responder ahora mismo.", "agent");
-        }
+        chat.innerHTML += `
+          <div class="msg agent">🤖 ${agent}: ${data.mensaje}</div>
+        `;
+        chat.scrollTop = chat.scrollHeight;
 
       } catch (err) {
-        addMessage("⚠️ Error de conexión con el servidor.", "agent");
+        chat.innerHTML += `
+          <div class="msg" style="color:red;">⚠️ Error de conexión</div>
+        `;
         console.error(err);
       }
     }
