@@ -14,8 +14,8 @@
       --agent: #9ecbff;
       --text: #ffffff;
       --muted: rgba(255,255,255,0.5);
-      --max-width: 760px;
       --radius: 16px;
+      --max-width: 720px; /* 👈 ANCHO ÓPTIMO */
     }
 
     * {
@@ -31,25 +31,33 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
-    /* ---------- APP GRID ---------- */
+    /* ---------- ESTRUCTURA GENERAL ---------- */
     body {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
+      display: flex;
+      justify-content: center;
       height: 100dvh;
+    }
+
+    .chat-shell {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 12px auto;
+      background: var(--panel-soft);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     }
 
     /* ---------- HEADER ---------- */
     header {
       background: var(--panel);
       padding: 10px 14px;
-    }
-
-    header .inner {
-      max-width: var(--max-width);
-      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
     }
 
     header span {
@@ -66,18 +74,6 @@
       font-size: 13px;
     }
 
-    /* ---------- CHAT SHELL (LA CAJA) ---------- */
-    .chat-shell {
-      max-width: var(--max-width);
-      margin: 12px auto;
-      background: var(--panel-soft);
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    }
-
     /* ---------- CHAT ---------- */
     #chat {
       flex: 1;
@@ -89,15 +85,15 @@
     }
 
     .msg {
-      max-width: 80%;
-      line-height: 1.45;
+      max-width: 85%;
+      line-height:  परिस1.45;
       word-wrap: break-word;
     }
 
     .msg.user {
       align-self: flex-end;
-      color: var(--user);
       text-align: right;
+      color: var(--user);
     }
 
     .msg.agent {
@@ -119,14 +115,11 @@
 
     /* ---------- INPUT ---------- */
     footer {
-      background: transparent;
+      background: var(--panel);
       padding: 10px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
-    footer .input-row {
       display: flex;
-      gap: 8px;
+      gap: 10px;
+      align-items: flex-end;
     }
 
     textarea {
@@ -137,7 +130,7 @@
       padding: 12px;
       font-size: 15px;
       min-height: 44px;
-      max-height: 120px;
+      max-height: 140px;
     }
 
     button {
@@ -150,13 +143,17 @@
       cursor: pointer;
     }
 
-    /* ---------- MOBILE ---------- */
-    @media (max-width: 768px) {
+    /* ---------- MÓVIL ---------- */
+    @media (max-width: 640px) {
+      body {
+        justify-content: stretch;
+      }
+
       .chat-shell {
+        max-width: none;
+        height: 100dvh;
         margin: 0;
         border-radius: 0;
-        max-width: 100%;
-        height: 100%;
       }
     }
   </style>
@@ -164,8 +161,9 @@
 
 <body>
 
-  <header>
-    <div class="inner">
+  <div class="chat-shell">
+
+    <header>
       <span>🔮 Alquimi·k</span>
       <select id="agentSelect">
         <option value="hildegard">Hildegard</option>
@@ -173,19 +171,16 @@
         <option value="maya">Maya</option>
         <option value="matt_natalia">Matt · Natalia</option>
       </select>
-    </div>
-  </header>
+    </header>
 
-  <main class="chat-shell">
     <div id="chat"></div>
 
     <footer>
-      <div class="input-row">
-        <textarea id="message" placeholder="Escribe aquí…"></textarea>
-        <button onclick="sendMessage()">Enviar</button>
-      </div>
+      <textarea id="message" placeholder="Escribe aquí…"></textarea>
+      <button onclick="sendMessage()">Enviar</button>
     </footer>
-  </main>
+
+  </div>
 
   <script>
     function nowTime() {
