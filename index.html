@@ -67,6 +67,7 @@
       width: 100%;
       max-width: 700px;
       padding: 12px;
+      padding-bottom: 120px; /* 👈 CLAVE: espacio para el footer */
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -197,6 +198,13 @@
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
+  function scrollToBottom() {
+    const chat = document.getElementById("chat");
+    requestAnimationFrame(() => {
+      chat.scrollTop = chat.scrollHeight;
+    });
+  }
+
   function addMessage({ text, sender, agentKey }) {
     const chat = document.getElementById("chat");
 
@@ -222,7 +230,7 @@
       `;
     }
 
-    chat.scrollTop = chat.scrollHeight;
+    scrollToBottom();
   }
 
   async function sendMessage() {
