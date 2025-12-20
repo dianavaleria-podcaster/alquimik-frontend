@@ -57,17 +57,16 @@
 
     /* ---------- CHAT ---------- */
     #chat-wrapper {
+      overflow-y: auto;
       display: flex;
       justify-content: center;
-      width: 100%;
-      overflow-y: auto;
+      padding-bottom: 12px;
     }
 
     #chat {
       width: 100%;
       max-width: 700px;
-      padding: 12px;
-      padding-bottom: 120px; /* 👈 CLAVE: espacio para el footer */
+      padding: 16px 12px 24px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -123,8 +122,6 @@
       background: var(--panel);
       padding: 8px;
       display: flex;
-      gap: 8px;
-      align-items: flex-end;
       justify-content: center;
     }
 
@@ -133,6 +130,7 @@
       max-width: 700px;
       display: flex;
       gap: 8px;
+      align-items: flex-end;
     }
 
     textarea {
@@ -143,7 +141,8 @@
       padding: 10px;
       font-size: 15px;
       min-height: 42px;
-      max-height: 120px;
+      max-height: 140px;
+      overflow-y: hidden;
     }
 
     button {
@@ -154,6 +153,7 @@
       font-weight: 600;
       font-size: 14px;
       cursor: pointer;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -193,33 +193,41 @@
     agentSelect.appendChild(opt);
   });
 
+  const chatWrapper = document.getElementById("chat-wrapper");
+  const chat = document.getElementById("chat");
+  const textarea = document.getElementById("message");
+
   function nowTime() {
     const d = new Date();
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
   function scrollToBottom() {
-    const chat = document.getElementById("chat");
     requestAnimationFrame(() => {
-      chat.scrollTop = chat.scrollHeight;
+      chatWrapper.scrollTop = chatWrapper.scrollHeight;
     });
   }
 
-  function addMessage({ text, sender, agentKey }) {
-    const chat = document.getElementById("chat");
+  function autoResizeTextarea() {
+    textarea.style.height = "auto";
+    textarea.style.height = Math.min(textarea.scrollHeight, 140) + "px";
+  }
 
+  textarea.addEventListener("input", autoResizeTextarea);
+
+  function addMessage({ text, sender, agentKey }) {
     if (sender === "user") {
-      chat.innerHTML += `
+      chat.insertAdjacentHTML("beforeend", `
         <div class="msg user">
           <div>
             <div class="bubble">${text}</div>
             <div class="meta">${nowTime()}</div>
           </div>
         </div>
-      `;
+      `);
     } else {
       const agent = AGENTS[agentKey];
-      chat.innerHTML += `
+      chat.insertAdjacentHTML("beforeend", `
         <div class="msg agent">
           <img class="avatar" src="${agent.avatar}" alt="${agent.name}">
           <div>
@@ -227,19 +235,19 @@
             <div class="meta">${nowTime()}</div>
           </div>
         </div>
-      `;
+      `);
     }
 
     scrollToBottom();
   }
 
   async function sendMessage() {
-    const input = document.getElementById("message");
-    const text = input.value.trim();
+    const text = textarea.value.trim();
     if (!text) return;
 
     const agentKey = agentSelect.value;
-    input.value = "";
+    textarea.value = "";
+    autoResizeTextarea();
 
     addMessage({ text, sender: "user" });
 
@@ -249,10 +257,7 @@
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            mensaje: text,
-            to: agentKey
-          })
+          body: JSON.stringify({ mensaje: text, to: agentKey })
         }
       );
 
