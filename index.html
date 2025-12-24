@@ -4,6 +4,8 @@
  <meta charset="UTF-8" />
  <title>Alquimi·k · Tester</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+ <!-- 👇 LIBRERÍA MÁGICA PARA FORMATO -->
+ <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
  <style>
   :root {
@@ -14,6 +16,7 @@
    --agent-bubble: #1f1f1f;
    --agent-text: #e0e0e0;
    --muted: rgba(255,255,255,0.4);
+   --accent: #9b59b6;
   }
 
   * { box-sizing: border-box; }
@@ -43,20 +46,11 @@
    border-bottom: 1px solid #333;
   }
 
-  header span {
-   font-weight: 700;
-   font-size: 16px;
-   letter-spacing: 0.5px;
-  }
+  header span { font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
 
   select {
-   background: #2a2a2a;
-   color: #fff;
-   border: 1px solid #444;
-   border-radius: 6px;
-   padding: 6px 10px;
-   font-size: 14px;
-   outline: none;
+   background: #2a2a2a; color: #fff; border: 1px solid #444;
+   border-radius: 6px; padding: 6px 10px; font-size: 14px; outline: none;
   }
 
   /* ---------- CHAT ---------- */
@@ -76,49 +70,26 @@
    gap: 18px;
   }
 
-  .msg {
-   display: flex;
-   flex-direction: column;
-   max-width: 85%;
-  }
-
-  .msg.user {
-   align-self: flex-end;
-   align-items: flex-end;
-  }
-
-  .msg.agent {
-   align-self: flex-start;
-   align-items: flex-start;
-  }
+  .msg { display: flex; flex-direction: column; max-width: 85%; }
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.agent { align-self: flex-start; align-items: flex-start; }
 
   .label {
-   font-size: 11px;
-   font-weight: 600;
-   margin-bottom: 4px;
-   color: var(--muted);
-   display: flex;
-   align-items: center;
-   gap: 6px;
+   font-size: 11px; font-weight: 600; margin-bottom: 4px;
+   color: var(--muted); display: flex; align-items: center; gap: 6px;
   }
 
-  /* Punto de color identificativo */
-  .dot {
-   width: 8px;
-   height: 8px;
-   border-radius: 50%;
-   background: #666;
-  }
-  .agent .dot { background: #9b59b6; /* Morado Alquimik */ }
-  .user .dot { background: #2ecc71; /* Verde Usuario */ }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
+  .agent .dot { background: var(--accent); }
+  .user .dot { background: #2ecc71; }
 
   .bubble {
    padding: 12px 16px;
    border-radius: 12px;
-   line-height: 1.5;
+   line-height: 1.6;
    font-size: 15px;
-   white-space: pre-wrap; /* Respeta saltos de línea */
    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+   word-wrap: break-word;
   }
 
   .user .bubble {
@@ -134,64 +105,37 @@
    border: 1px solid #333;
   }
 
-  .meta {
-   font-size: 10px;
-   color: var(--muted);
-   margin-top: 4px;
-   opacity: 0.7;
-  }
+  /* ESTILOS MARKDOWN DENTRO DE LA BURBUJA */
+  .bubble h1, .bubble h2, .bubble h3 { margin: 10px 0 5px; font-size: 1.1em; color: #fff; }
+  .bubble p { margin: 0 0 10px; }
+  .bubble p:last-child { margin-bottom: 0; }
+  .bubble ul, .bubble ol { margin: 5px 0 10px 20px; padding: 0; }
+  .bubble li { margin-bottom: 4px; }
+  .bubble strong { color: #fff; font-weight: 600; }
+
+  .meta { font-size: 10px; color: var(--muted); margin-top: 4px; opacity: 0.7; }
 
   /* ---------- INPUT ---------- */
   footer {
-   background: var(--panel);
-   padding: 12px;
-   display: flex;
-   justify-content: center;
-   border-top: 1px solid #333;
+   background: var(--panel); padding: 12px; display: flex;
+   justify-content: center; border-top: 1px solid #333;
   }
 
-  .input-wrapper {
-   width: 100%;
-   max-width: 800px;
-   display: flex;
-   gap: 10px;
-   align-items: flex-end;
-  }
+  .input-wrapper { width: 100%; max-width: 800px; display: flex; gap: 10px; align-items: flex-end; }
 
   textarea {
-   flex: 1;
-   background: #222;
-   color: #fff;
-   resize: none;
-   border-radius: 12px;
-   border: 1px solid #444;
-   padding: 12px;
-   font-size: 15px;
-   min-height: 48px;
-   max-height: 150px;
-   outline: none;
+   flex: 1; background: #222; color: #fff; resize: none;
+   border-radius: 12px; border: 1px solid #444; padding: 12px;
+   font-size: 15px; min-height: 48px; max-height: 150px; outline: none;
   }
-
-  textarea:focus {
-   border-color: #666;
-  }
+  textarea:focus { border-color: #666; }
 
   button {
-   background: #333;
-   color: #fff;
-   border: 1px solid #555;
-   border-radius: 12px;
-   padding: 0 20px;
-   height: 48px;
-   font-weight: 600;
-   font-size: 14px;
-   cursor: pointer;
-   transition: background 0.2s;
+   background: #333; color: #fff; border: 1px solid #555;
+   border-radius: 12px; padding: 0 20px; height: 48px;
+   font-weight: 600; font-size: 14px; cursor: pointer;
   }
-
-  button:hover {
-   background: #444;
-  }
+  button:hover { background: #444; }
  </style>
 </head>
 
@@ -223,7 +167,6 @@
  };
 
  const agentSelect = document.getElementById("agentSelect");
- 
  Object.entries(AGENTS).forEach(([key, name]) => {
   const opt = document.createElement("option");
   opt.value = key;
@@ -240,9 +183,7 @@
  }
 
  function scrollToBottom() {
-  requestAnimationFrame(() => {
-   chatWrapper.scrollTop = chatWrapper.scrollHeight;
-  });
+  requestAnimationFrame(() => { chatWrapper.scrollTop = chatWrapper.scrollHeight; });
  }
 
  function autoResizeTextarea() {
@@ -251,8 +192,6 @@
  }
 
  textarea.addEventListener("input", autoResizeTextarea);
- 
- // Enviar con Enter (sin Shift)
  textarea.addEventListener("keydown", (e) => {
    if (e.key === "Enter" && !e.shiftKey) {
      e.preventDefault();
@@ -264,12 +203,13 @@
   const isUser = sender === "user";
   const name = isUser ? "Diana (Tester)" : AGENTS[agentKey];
   
+  // 👇 AQUÍ LA MAGIA: Usamos marked.parse() para formatear
+  const content = isUser ? text : marked.parse(text); 
+  
   const html = `
    <div class="msg ${sender}">
-    <div class="label">
-      <div class="dot"></div> ${name}
-    </div>
-    <div class="bubble">${text}</div>
+    <div class="label"><div class="dot"></div> ${name}</div>
+    <div class="bubble">${content}</div>
     <div class="meta">${nowTime()}</div>
    </div>
   `;
@@ -299,19 +239,14 @@
    );
 
    const data = await response.json();
-
    addMessage({
-    text: data.mensaje || "⚠️ Respuesta vacía del servidor",
+    text: data.mensaje || "⚠️ Respuesta vacía",
     sender: "agent",
     agentKey
    });
 
   } catch (err) {
-   addMessage({
-    text: "⚠️ Error de conexión con el Backend.",
-    sender: "agent",
-    agentKey
-   });
+   addMessage({ text: "⚠️ Error de conexión", sender: "agent", agentKey });
   }
  }
 </script>
