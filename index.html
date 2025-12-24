@@ -2,140 +2,172 @@
 <html lang="es">
 <head>
  <meta charset="UTF-8" />
- <title>Alquimi·k · Tester</title>
+ <title>Alquimi·k · Sistema Integral</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
- <!-- 👇 LIBRERÍA MÁGICA PARA FORMATO -->
+ <!-- Librería para convertir Markdown a HTML bonito -->
  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
  <style>
   :root {
-   --bg: #0f0f0f;
-   --panel: #181818;
-   --user-bubble: #2a3a2a;
-   --user-text: #81ff9c;
-   --agent-bubble: #1f1f1f;
+   --bg: #0a0a0a;
+   --panel: #161616;
+   --accent: #9b59b6; /* Morado Alquimik */
+   --user-bubble: #1e3a2a;
+   --user-text: #e0f2f1;
+   --agent-bubble: #222;
    --agent-text: #e0e0e0;
    --muted: rgba(255,255,255,0.4);
-   --accent: #9b59b6;
+   --border: #333;
   }
 
   * { box-sizing: border-box; }
 
   html, body {
-   margin: 0;
-   padding: 0;
-   height: 100%;
-   background: var(--bg);
-   color: #fff;
-   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+   margin: 0; padding: 0; height: 100%;
+   background: var(--bg); color: #fff;
+   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
   body {
-   display: grid;
-   grid-template-rows: auto 1fr auto;
-   height: 100dvh;
+   display: grid; grid-template-rows: auto 1fr auto; height: 100dvh;
   }
 
-  /* ---------- HEADER ---------- */
+  /* HEADER */
   header {
-   background: var(--panel);
-   padding: 10px 16px;
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   border-bottom: 1px solid #333;
+   background: var(--panel); padding: 12px 20px;
+   display: flex; align-items: center; justify-content: space-between;
+   border-bottom: 1px solid var(--border);
+   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+   z-index: 10;
   }
 
-  header span { font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
+  header span {
+   font-weight: 700; font-size: 18px; letter-spacing: 1px;
+   background: linear-gradient(90deg, #fff, #bbb);
+   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
 
   select {
    background: #2a2a2a; color: #fff; border: 1px solid #444;
-   border-radius: 6px; padding: 6px 10px; font-size: 14px; outline: none;
+   border-radius: 8px; padding: 6px 12px; font-size: 14px; outline: none;
+   cursor: pointer; transition: border 0.2s;
   }
+  select:hover { border-color: var(--accent); }
 
-  /* ---------- CHAT ---------- */
+  /* CHAT AREA */
   #chat-wrapper {
-   overflow-y: auto;
-   display: flex;
-   justify-content: center;
-   padding: 0 0 20px 0;
+   overflow-y: auto; display: flex; justify-content: center;
+   padding: 20px 0; scroll-behavior: smooth;
   }
 
   #chat {
-   width: 100%;
-   max-width: 800px;
-   padding: 20px 16px;
-   display: flex;
-   flex-direction: column;
-   gap: 18px;
+   width: 100%; max-width: 800px; padding: 0 20px;
+   display: flex; flex-direction: column; gap: 24px;
   }
 
-  .msg { display: flex; flex-direction: column; max-width: 85%; }
+  .msg { display: flex; flex-direction: column; max-width: 85%; position: relative; }
   .msg.user { align-self: flex-end; align-items: flex-end; }
   .msg.agent { align-self: flex-start; align-items: flex-start; }
 
+  /* Etiqueta del nombre */
   .label {
-   font-size: 11px; font-weight: 600; margin-bottom: 4px;
+   font-size: 11px; font-weight: 600; margin-bottom: 6px;
    color: var(--muted); display: flex; align-items: center; gap: 6px;
+   text-transform: uppercase; letter-spacing: 0.5px;
   }
 
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
-  .agent .dot { background: var(--accent); }
-  .user .dot { background: #2ecc71; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .agent .dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .user .dot { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
 
+  /* Burbuja de texto */
   .bubble {
-   padding: 12px 16px;
-   border-radius: 12px;
-   line-height: 1.6;
-   font-size: 15px;
-   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+   padding: 14px 18px; border-radius: 16px;
+   line-height: 1.6; font-size: 15px;
+   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
    word-wrap: break-word;
   }
 
   .user .bubble {
-   background: var(--user-bubble);
-   color: var(--user-text);
+   background: var(--user-bubble); color: var(--user-text);
    border-bottom-right-radius: 2px;
+   border: 1px solid rgba(46, 204, 113, 0.2);
   }
 
   .agent .bubble {
-   background: var(--agent-bubble);
-   color: var(--agent-text);
+   background: var(--agent-bubble); color: var(--agent-text);
    border-bottom-left-radius: 2px;
-   border: 1px solid #333;
+   border: 1px solid var(--border);
   }
 
-  /* ESTILOS MARKDOWN DENTRO DE LA BURBUJA */
-  .bubble h1, .bubble h2, .bubble h3 { margin: 10px 0 5px; font-size: 1.1em; color: #fff; }
+  /* Formato Markdown dentro de la burbuja */
   .bubble p { margin: 0 0 10px; }
   .bubble p:last-child { margin-bottom: 0; }
+  .bubble strong { color: #fff; font-weight: 700; }
   .bubble ul, .bubble ol { margin: 5px 0 10px 20px; padding: 0; }
   .bubble li { margin-bottom: 4px; }
-  .bubble strong { color: #fff; font-weight: 600; }
-
-  .meta { font-size: 10px; color: var(--muted); margin-top: 4px; opacity: 0.7; }
-
-  /* ---------- INPUT ---------- */
-  footer {
-   background: var(--panel); padding: 12px; display: flex;
-   justify-content: center; border-top: 1px solid #333;
+  .bubble h1, .bubble h2, .bubble h3 { 
+    margin: 15px 0 8px; font-size: 1.1em; color: var(--accent); 
+    border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;
   }
 
-  .input-wrapper { width: 100%; max-width: 800px; display: flex; gap: 10px; align-items: flex-end; }
+  .meta { font-size: 10px; color: var(--muted); margin-top: 6px; opacity: 0.6; }
+
+  /* INPUT AREA */
+  footer {
+   background: var(--panel); padding: 16px; display: flex;
+   justify-content: center; border-top: 1px solid var(--border);
+  }
+
+  .input-wrapper {
+   width: 100%; max-width: 800px; display: flex; gap: 12px; align-items: flex-end;
+   background: #222; border-radius: 16px; border: 1px solid #444; padding: 8px;
+   transition: border 0.2s, box-shadow 0.2s;
+  }
+  .input-wrapper:focus-within {
+   border-color: var(--accent); box-shadow: 0 0 0 2px rgba(155, 89, 182, 0.2);
+  }
 
   textarea {
-   flex: 1; background: #222; color: #fff; resize: none;
-   border-radius: 12px; border: 1px solid #444; padding: 12px;
-   font-size: 15px; min-height: 48px; max-height: 150px; outline: none;
+   flex: 1; background: transparent; color: #fff; resize: none;
+   border: none; padding: 10px; font-size: 15px;
+   min-height: 24px; max-height: 150px; outline: none;
   }
-  textarea:focus { border-color: #666; }
 
   button {
-   background: #333; color: #fff; border: 1px solid #555;
-   border-radius: 12px; padding: 0 20px; height: 48px;
+   background: var(--accent); color: #fff; border: none;
+   border-radius: 10px; padding: 0 20px; height: 40px;
    font-weight: 600; font-size: 14px; cursor: pointer;
+   transition: filter 0.2s, transform 0.1s;
   }
-  button:hover { background: #444; }
+  button:hover { filter: brightness(1.1); }
+  button:active { transform: scale(0.96); }
+
+  /* LOADER (El Rombo Alquímico) */
+  #loader {
+    display: none; padding: 0 20px; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--muted); font-style: italic;
+  }
+  
+  .alquimik-pulse {
+    width: 20px; height: 20px; position: relative;
+  }
+  .alquimik-pulse::before {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; height: 100%;
+    border: 2px solid var(--accent); border-radius: 50%;
+    animation: pulse 1.5s infinite ease-out;
+  }
+  .alquimik-core {
+    position: absolute; top: 50%; left: 50%;
+    width: 6px; height: 6px; background: var(--accent);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  @keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+  }
  </style>
 </head>
 
@@ -152,7 +184,7 @@
 
 <footer>
  <div class="input-wrapper">
-  <textarea id="message" placeholder="Habla con el sistema..."></textarea>
+  <textarea id="message" placeholder="Escribe tu mensaje..."></textarea>
   <button onclick="sendMessage()">Enviar</button>
  </div>
 </footer>
@@ -169,14 +201,25 @@
  const agentSelect = document.getElementById("agentSelect");
  Object.entries(AGENTS).forEach(([key, name]) => {
   const opt = document.createElement("option");
-  opt.value = key;
-  opt.textContent = name;
+  opt.value = key; opt.textContent = name;
   agentSelect.appendChild(opt);
  });
 
  const chatWrapper = document.getElementById("chat-wrapper");
  const chat = document.getElementById("chat");
  const textarea = document.getElementById("message");
+ const loaderHtml = `
+  <div id="loader">
+   <div class="alquimik-pulse"><div class="alquimik-core"></div></div>
+   <span>Procesando...</span>
+  </div>
+ `;
+
+ // Inyectamos el loader oculto al principio
+ chat.insertAdjacentHTML('afterend', loaderHtml);
+ const loader = document.getElementById("loader");
+ // Movemos el loader DENTRO del chat para que esté al final de los mensajes
+ chat.appendChild(loader); 
 
  function nowTime() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -194,16 +237,15 @@
  textarea.addEventListener("input", autoResizeTextarea);
  textarea.addEventListener("keydown", (e) => {
    if (e.key === "Enter" && !e.shiftKey) {
-     e.preventDefault();
-     sendMessage();
+     e.preventDefault(); sendMessage();
    }
  });
 
  function addMessage({ text, sender, agentKey }) {
   const isUser = sender === "user";
-  const name = isUser ? "Diana (Tester)" : AGENTS[agentKey];
+  const name = isUser ? "Usuario" : AGENTS[agentKey];
   
-  // 👇 AQUÍ LA MAGIA: Usamos marked.parse() para formatear
+  // Parseo de Markdown
   const content = isUser ? text : marked.parse(text); 
   
   const html = `
@@ -214,7 +256,8 @@
    </div>
   `;
   
-  chat.insertAdjacentHTML("beforeend", html);
+  // Insertamos ANTES del loader para que el loader siempre quede abajo
+  loader.insertAdjacentHTML('beforebegin', html);
   scrollToBottom();
  }
 
@@ -228,6 +271,10 @@
 
   addMessage({ text, sender: "user" });
 
+  // MOSTRAR LOADER
+  loader.style.display = "flex";
+  scrollToBottom();
+
   try {
    const response = await fetch(
     "https://alquimik-backend.onrender.com/api/chat",
@@ -239,6 +286,10 @@
    );
 
    const data = await response.json();
+   
+   // OCULTAR LOADER
+   loader.style.display = "none";
+
    addMessage({
     text: data.mensaje || "⚠️ Respuesta vacía",
     sender: "agent",
@@ -246,6 +297,7 @@
    });
 
   } catch (err) {
+   loader.style.display = "none";
    addMessage({ text: "⚠️ Error de conexión", sender: "agent", agentKey });
   }
  }
