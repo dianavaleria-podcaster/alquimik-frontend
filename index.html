@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alquimi·k Professional | Núcleo Soberano</title>
+    
+    <!-- Scripts de Infraestructura -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Texturina:opsz,wght@12..72,100..900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
@@ -59,11 +63,6 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "@google/genai": "https://esm.sh/@google/genai@1.34.0",
-    "./App": "/App.tsx",
-    "./types": "/types.ts",
-    "./services/gemini": "/services/gemini.ts",
-    "./data/asteroids": "/data/asteroids.ts",
-    "./logic/engine": "/logic/engine.ts",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
     "express": "https://esm.sh/express@^5.2.1",
@@ -80,6 +79,7 @@
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <!-- Babel transpilando el punto de entrada en caliente para el navegador -->
+    <script type="text/babel" data-type="module" src="/index.tsx"></script>
 </body>
 </html>
