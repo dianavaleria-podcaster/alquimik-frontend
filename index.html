@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alquimi·k Professional</title>
+    <title>Alquimi·k Professional | Núcleo Soberano</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -28,15 +28,20 @@
 
         .font-texturina { font-family: var(--font-title); }
         .shape-diamond { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+        .shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
         
         #root { height: 100vh; width: 100vw; }
 
-        /* Clases de apoyo UI */
-        .title-upper { font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.15em; }
-        .label-meta { font-size: 10px; opacity: 0.5; }
-        .brand-access { font-family: var(--font-title); font-size: 3rem; font-weight: 700; }
-        .scroll-hide::-webkit-scrollbar { display: none; }
-        .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .title-upper { font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.2em; }
+        .brand-access { font-family: var(--font-title); font-size: 3.5rem; font-weight: 700; color: var(--negro-puro); }
+        
+        /* Animaciones */
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(216, 168, 74, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(216, 168, 74, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(216, 168, 74, 0); }
+        }
+        .pulse-active { animation: pulse-gold 2s infinite; }
     </style>
 
     <script type="importmap">
@@ -45,7 +50,7 @@
     "react": "https://esm.sh/react@18.2.0",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "@google/genai": "https://esm.sh/@google/genai@1.34.0",
     "./App": "/App.tsx",
     "./types": "/types.ts",
     "./services/gemini": "/services/gemini.ts",
