@@ -1,173 +1,75 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
- <meta charset="UTF-8" />
- <title>Alquimi·k · Tester</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
- <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alquimi·k Professional | Soberanía de Diana Valeria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Texturina:opsz,wght@12..72,100..900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        :root {
+            --font-main: 'Inter', sans-serif;
+            --font-title: 'Texturina', serif;
+            --dorado-miel: #D8A84A;
+            --negro-puro: #000000;
+            --blanco-calido: #F5F3EE;
+        }
 
- <style>
-  :root {
-   --bg: #0a0a0a;
-   --panel: #161616;
-   --accent: #9b59b6;
-   --user-bubble: #1e3a2a;
-   --user-text: #e0f2f1;
-   --agent-bubble: #222;
-   --agent-text: #e0e0e0;
-   --muted: rgba(255,255,255,0.4);
+        body {
+            font-family: var(--font-main);
+            background-color: var(--blanco-calido);
+            color: var(--negro-puro);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-texturina { font-family: var(--font-title); }
+        .brand-access { font-family: var(--font-title); font-size: 32px; font-weight: 700; color: var(--negro-puro); }
+        .title-upper { font-size: 12px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; opacity: 0.6; }
+        
+        /* Utilidades de Diseño */
+        .shape-diamond {
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        .scroll-hide::-webkit-scrollbar { display: none; }
+        .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        #root {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "express": "https://esm.sh/express@^5.2.1",
+    "cors": "https://esm.sh/cors@^2.8.5",
+    "dotenv": "https://esm.sh/dotenv@^17.2.3",
+    "pg": "https://esm.sh/pg@^8.16.3",
+    "fs": "https://esm.sh/fs@^0.0.1-security",
+    "crypto": "https://esm.sh/crypto@^1.0.1",
+    "path": "https://esm.sh/path@^0.12.7",
+    "url": "https://esm.sh/url@^0.11.4"
   }
-
-  * { box-sizing: border-box; }
-  body { margin: 0; padding: 0; height: 100dvh; background: var(--bg); color: #fff; font-family: sans-serif; display: grid; grid-template-rows: auto 1fr auto; }
-
-  /* HEADER */
-  header { background: var(--panel); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; }
-  header span { font-weight: 700; letter-spacing: 1px; color: var(--accent); }
-  select { background: #333; color: #fff; border: none; padding: 6px; border-radius: 4px; }
-
-  /* CHAT */
-  #chat-wrapper { overflow-y: auto; display: flex; justify-content: center; padding: 20px 0; }
-  #chat { width: 100%; max-width: 800px; padding: 0 20px; display: flex; flex-direction: column; gap: 20px; }
-
-  .msg { display: flex; flex-direction: column; max-width: 85%; }
-  .msg.user { align-self: flex-end; align-items: flex-end; }
-  .msg.agent { align-self: flex-start; align-items: flex-start; }
-
-  .label { font-size: 11px; margin-bottom: 4px; color: var(--muted); display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; }
-  .agent .dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-  .user .dot { background: #2ecc71; }
-
-  .bubble { padding: 14px 18px; border-radius: 12px; line-height: 1.6; font-size: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-  .user .bubble { background: var(--user-bubble); color: var(--user-text); border-bottom-right-radius: 2px; }
-  .agent .bubble { background: var(--agent-bubble); color: var(--agent-text); border-bottom-left-radius: 2px; border: 1px solid #333; min-height: 40px; }
-
-  /* Markdown Styles */
-  .bubble p { margin: 0 0 10px; } .bubble p:last-child { margin: 0; }
-  .bubble strong { color: #fff; } 
-  .bubble ul { margin: 5px 0 10px 20px; padding: 0; }
-
-  /* LOADER ANIMADO */
-  #loader { display: none; align-items: center; gap: 10px; padding: 0 20px; color: var(--muted); font-size: 12px; font-style: italic; }
-  .pulse-ring { width: 20px; height: 20px; border: 2px solid var(--accent); border-radius: 50%; position: relative; animation: pulse 1.5s infinite; }
-  .pulse-core { width: 6px; height: 6px; background: var(--accent); position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(45deg); }
-  @keyframes pulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
-
-  /* INPUT */
-  footer { background: var(--panel); padding: 16px; display: flex; justify-content: center; border-top: 1px solid #333; }
-  .input-wrapper { width: 100%; max-width: 800px; display: flex; gap: 10px; background: #222; padding: 8px; border-radius: 16px; border: 1px solid #444; }
-  textarea { flex: 1; background: transparent; color: #fff; border: none; padding: 10px; resize: none; font-size: 15px; outline: none; max-height: 150px; }
-  button { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 0 20px; font-weight: 600; cursor: pointer; }
- </style>
+}
+</script>
 </head>
 <body>
-
-<header>
- <span>🏛️ ALQUIMI·K</span>
- <select id="agentSelect"></select>
-</header>
-
-<div id="chat-wrapper">
- <div id="chat"></div>
-</div>
-
-<div id="loader">
- <div class="pulse-ring"><div class="pulse-core"></div></div>
- <span>Consultando el Concilio...</span>
-</div>
-
-<footer>
- <div class="input-wrapper">
-  <textarea id="message" placeholder="Escribe aquí..."></textarea>
-  <button onclick="sendMessage()">Enviar</button>
- </div>
-</footer>
-
-<script>
- const AGENTS = { hildegard: "Hildegard", lyra: "Lyra", maya: "Maya", matt_natalia: "Matt", chloe: "Chloë" };
- const agentSelect = document.getElementById("agentSelect");
- Object.entries(AGENTS).forEach(([k,n]) => {
-  const o = document.createElement("option"); o.value = k; o.textContent = n; agentSelect.appendChild(o);
- });
-
- const chatWrapper = document.getElementById("chat-wrapper");
- const chat = document.getElementById("chat");
- const loader = document.getElementById("loader");
- const textarea = document.getElementById("message");
-
- function now() { return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
- function scroll() { requestAnimationFrame(() => chatWrapper.scrollTop = chatWrapper.scrollHeight); }
-
- textarea.addEventListener("keydown", (e) => {
-   if(e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
- });
-
- // EFECTO DE ESCRITURA (TYPING)
- function typeText(element, text) {
-   let i = 0;
-   // Renderizamos Markdown primero, pero lo escribimos sucio? No, mejor escribir texto y luego parsear.
-   // Truco: Escribimos el HTML final poco a poco.
-   const html = marked.parse(text);
-   // Para simplificar el efecto typing con HTML, lo mostramos de golpe con fade-in,
-   // o simulamos escritura rapida.
-   // Opción A: Escritura simple
-   element.innerHTML = html; 
-   // Opción B: Si quieres ver letra a letra, requiere lógica compleja para no romper tags HTML.
-   // Usaremos un FADE IN suave que es más elegante.
-   element.style.opacity = 0;
-   element.style.transition = "opacity 0.5s";
-   requestAnimationFrame(() => element.style.opacity = 1);
- }
-
- function addMessage({ text, sender, agentKey }) {
-  const name = sender === "user" ? "Tú" : AGENTS[agentKey];
-  const div = document.createElement("div");
-  div.className = `msg ${sender}`;
-  
-  let content = "";
-  if (sender === "user") {
-    content = text;
-  } else {
-    content = marked.parse(text); // Convertir Markdown
-  }
-
-  div.innerHTML = `
-   <div class="label"><div class="dot"></div> ${name}</div>
-   <div class="bubble">${content}</div>
-   <div class="meta">${now()}</div>
-  `;
-  
-  chat.appendChild(div);
-  scroll();
- }
-
- async function sendMessage() {
-  const text = textarea.value.trim();
-  if(!text) return;
-  textarea.value = "";
-  
-  addMessage({ text, sender: "user" });
-  
-  loader.style.display = "flex"; // Mostrar Rombo
-  chat.appendChild(loader); // Mover loader al final
-  scroll();
-
-  try {
-   const res = await fetch("https://alquimik-backend.onrender.com/api/chat", {
-    method: "POST", headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({ mensaje: text, to: agentSelect.value })
-   });
-   const data = await res.json();
-   
-   loader.style.display = "none";
-   addMessage({ text: data.mensaje || "...", sender: "agent", agentKey: agentSelect.value });
-
-  } catch(e) {
-   loader.style.display = "none";
-   addMessage({ text: "Error de conexión", sender: "agent", agentKey: agentSelect.value });
-  }
- }
-</script>
+    <div id="root"></div>
+    <!-- Carga del Núcleo React Alquimi·k -->
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>
