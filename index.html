@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alquimi·k Professional | Soberanía de Diana Valeria</title>
+    <title>Alquimi·k Professional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -23,27 +23,20 @@
             background-color: var(--blanco-calido);
             color: var(--negro-puro);
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
         .font-texturina { font-family: var(--font-title); }
-        .brand-access { font-family: var(--font-title); font-size: 32px; font-weight: 700; color: var(--negro-puro); }
-        .title-upper { font-size: 12px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; opacity: 0.6; }
+        .shape-diamond { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
         
-        /* Utilidades de Diseño */
-        .shape-diamond {
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-        }
+        #root { height: 100vh; width: 100vw; }
 
+        /* Clases de apoyo UI */
+        .title-upper { font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.15em; }
+        .label-meta { font-size: 10px; opacity: 0.5; }
+        .brand-access { font-family: var(--font-title); font-size: 3rem; font-weight: 700; }
         .scroll-hide::-webkit-scrollbar { display: none; }
         .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-        #root {
-            height: 100vh;
-            width: 100vw;
-        }
     </style>
 
     <script type="importmap">
@@ -52,9 +45,14 @@
     "react": "https://esm.sh/react@18.2.0",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "./App": "/App.tsx",
+    "./types": "/types.ts",
+    "./services/gemini": "/services/gemini.ts",
+    "./data/asteroids": "/data/asteroids.ts",
+    "./logic/engine": "/logic/engine.ts",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
     "express": "https://esm.sh/express@^5.2.1",
     "cors": "https://esm.sh/cors@^2.8.5",
     "dotenv": "https://esm.sh/dotenv@^17.2.3",
@@ -69,7 +67,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- Carga del Núcleo React Alquimi·k -->
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
